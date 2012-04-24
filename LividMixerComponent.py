@@ -9,6 +9,7 @@ class LividMixerComponent(MixerComponent):
   def __init__(self, 
     channel = 0, 
     sends = [], 
+    crossfader = None, 
     faders = []):
     MixerComponent.__init__(self, len(faders))
     
@@ -18,6 +19,9 @@ class LividMixerComponent(MixerComponent):
 
     self.build_faders(channel, faders)
     self.build_sends(channel, sends)
+    
+    if crossfader is not None:
+      self.set_crossfader_control(EncoderElement(MIDI_CC_TYPE, channel, crossfader, Live.MidiMap.MapMode.absolute))
 
 
   def build_faders(self, channel, faders):
