@@ -30,6 +30,7 @@ class LividMixerComponent(MixerComponent):
   def build_sends(self, channel, sends):
     """Build and assign send encoders, from channel and list of CCs"""
     for i in range(len(sends)):
+
       send_encoder_ccs = sends[i] # If not already a tuple, convert it.
       send_encoders = [EncoderElement(MIDI_CC_TYPE, channel, cc, Live.MidiMap.MapMode.absolute) for cc in send_encoder_ccs] 
       strip = self.channel_strip(i)
