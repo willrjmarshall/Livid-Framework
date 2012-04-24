@@ -7,23 +7,35 @@ from _Framework.EncoderElement import EncoderElement
 
 class LividMixerComponent(MixerComponent):
   def __init__(self, 
-    num_tracks = 0, 
-    num_returns = 0, 
     channel = 0, 
+    sends = [], 
     faders = []):
-
-    # Some basic sanity checking
-    assert(len(faders) == num_tracks + num_returns)
-
-    # Boilerplate
-    MixerComponent.__init__(self, num_tracks, num_returns, False, False)
+    MixerComponent.__init__(self, len(faders))
     
     # Here we set a lot of defaults that otherwise get copypasted
     self.name = "Mixer"
     self.set_track_offset(0)
 
-    fader_encoders = [EncoderElement(MIDI_CC_TYPE, channel, cc,Live.MidiMap.MapMode.absolute) for cc in faders] 
-    for i in range(num_tracks):
+    self.build_faders(channel, faders)
+    self.build_sends(channel, sends)
+
+
+  def build_faders(self, channel, faders):
+    """Build and assign faders as EncoderElements, from passed channel and list of fader CCs."""
+    fader_encoders = [EncoderElement(MIDI_CC_TYPE, channel, cc, Live.MidiMap.MapMode.absolute) for cc in faders] 
+    for i in range(len(faders)):
       strip = self.channel_strip(i)
       strip.set_volume_control(fader_encoders[i])
-      #strip.set_mute_button(fader
+
+  def build_sends(self, channel, sends):
+    """Build and assign send encoders, from channel and list of CCs"""
+    for i in range(len(sends)):
+      send_encoder_ccs = sends[i] # If not already a tuple, convert it.
+      send_encoders = [EncoderElement(MIDI_CC_TYPE, channel, cc, Live.MidiMap.MapMode.absolute) for cc in send_encoder_ccs] 
+      strip = self.channel_strip(i)
+      strip.set_send_controls(tuple(send_encoders))
+    
+
+  # Treat returns as tracks
+  def tracks_to_use(self):
+      return (self.song().visible_tracks + self.song().return_tracks)
