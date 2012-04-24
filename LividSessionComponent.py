@@ -8,7 +8,7 @@ from _Framework.ButtonElement import ButtonElement
 from RGBButtonElement import RGBButtonElement
 
 class LividSessionComponent(SessionComponent):
-  def __init__(self, matrix = [], navigation = None, channel = 0):
+  def __init__(self, matrix = [], navigation = None, channel = 0, mixer = False):
     # We can infer the width and height from the button matrix
     SessionComponent.__init__(self, len(matrix[0]), len(matrix))
     self.channel = channel 
@@ -16,13 +16,17 @@ class LividSessionComponent(SessionComponent):
 
     self.setup_navigation(navigation)
     # Scene launch buttons next
+   
+    if mixer:
+      self.set_mixer(mixer)
+
 
   def setup_navigation(self, navigation):
     if navigation is not None:
-      self.up_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, navigation['up'], off_color = YELLOW)    
-      self.down_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, navigation['down'], off_color = YELLOW)    
-      self.left_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, navigation['left'], off_color = YELLOW)    
-      self.right_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, navigation['right'], off_color = YELLOW)    
+      self.up_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, navigation['up'], off_color = GREEN)    
+      self.down_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, navigation['down'], off_color = GREEN)    
+      self.left_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, navigation['left'], off_color = GREEN)    
+      self.right_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, navigation['right'], off_color = GREEN)    
       self.set_scene_bank_buttons(self.down_button, self.up_button)
       self.set_track_bank_buttons(self.right_button, self.left_button)
 

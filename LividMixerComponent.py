@@ -1,6 +1,7 @@
 import Live
 
 from LividConstants import *
+from LividChanStripComponent import LividChanStripComponent
 
 from _Framework.MixerComponent import MixerComponent 
 from _Framework.EncoderElement import EncoderElement 
@@ -58,3 +59,7 @@ class LividMixerComponent(MixerComponent):
   # Treat returns as tracks
   def tracks_to_use(self):
     return (self.song().visible_tracks + self.song().return_tracks)
+
+
+  def _create_strip(self):
+    return LividChanStripComponent()
