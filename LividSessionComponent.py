@@ -48,10 +48,10 @@ class LividSessionComponent(SessionComponent, Elementary):
 
   def setup_navigation(self, navigation):
     if navigation is not None:
-      self.up_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, navigation['up'], off_color = GREEN)    
-      self.down_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, navigation['down'], off_color = GREEN)    
-      self.left_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, navigation['left'], off_color = GREEN)    
-      self.right_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, navigation['right'], off_color = GREEN)    
+      self.up_button = self.button(navigation['up'], off_color = GREEN)    
+      self.down_button = self.button(navigation['down'], off_color = GREEN)    
+      self.left_button = self.button(navigation['left'], off_color = GREEN)    
+      self.right_button = self.button(navigation['right'], off_color = GREEN)    
       self.set_scene_bank_buttons(self.down_button, self.up_button)
       self.set_track_bank_buttons(self.right_button, self.left_button)
 
@@ -61,7 +61,7 @@ class LividSessionComponent(SessionComponent, Elementary):
     for scene_index, row in enumerate(matrix):
       scene = self.scene(scene_index)
       scene.name = 'Scene_' + str(scene_index)
-      button_row = [ButtonElement(True, MIDI_NOTE_TYPE, self.channel, cc) for cc in row]
+      button_row = [self.button(cc, blink_on = True, off_color = OFF) for cc in row]
       for i, cc in enumerate(row):
         clip_slot = scene.clip_slot(i) 
         clip_slot.set_triggered_to_play_value(YELLOW)

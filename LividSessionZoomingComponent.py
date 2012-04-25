@@ -1,23 +1,26 @@
 from LividConstants import *
 from RGBButtonElement import RGBButtonElement
+from Elementary import Elementary
 
 from _Framework.SessionZoomingComponent import SessionZoomingComponent
 
-class LividSessionZoomingComponent(SessionZoomingComponent):
+class LividSessionZoomingComponent(SessionZoomingComponent, Elementary):
   """ Customized session zoom component with a real init function """
 
   def __init__(self, session, shift, 
       unselected_color = RED,
       selected_color = GREEN,
-      channel = 0):
+      channel = 0,
+      **kwargs):
 
     SessionZoomingComponent.__init__(self, session)
+    Elementary.__init__(self, **kwargs)
     
     # Get nav buttons, matrix, scene_launch buttons from session
     self.channel = channel
 
     self.set_button_matrix(session.button_matrix)
-    self.set_zoom_button(RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, shift))
+    self.set_zoom_button(self.button(shift, blink_on = True))
 
     self.set_stopped_value(unselected_color)
     self.set_selected_value(selected_color)

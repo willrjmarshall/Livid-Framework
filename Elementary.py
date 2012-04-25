@@ -26,4 +26,10 @@ class Elementary(object):
     return self.encoder_class(MIDI_CC_TYPE, self.channel, cc, Live.MidiMap.MapMode.absolute)
 
   def button(self, note, **kwargs):
-    return self.button_class(True, MIDI_NOTE_TYPE, self.channel, note, **kwargs)
+    """ Create a button of the cached class, and attach event callbacks for blinking """
+    button =  self.button_class(True, MIDI_NOTE_TYPE, self.channel, note, **kwargs)
+    if button.blink_on:
+      self._register_timer_callback(button.blink)
+    return button
+
+

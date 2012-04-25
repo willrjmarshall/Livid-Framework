@@ -11,10 +11,10 @@ class LividTransportComponent(TransportComponent, Elementary):
     Elementary.__init__(self, **kwargs)
 
     if play is not None:
-      self.play_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, play, off_color = PURPLE)
+      self.play_button = self.button(play, off_color = PURPLE) 
       self.set_play_button(self.play_button)
     if stop is not None:
-      self.stop_button = RGBButtonElement(True, MIDI_NOTE_TYPE, self.channel, stop, on_color = RED, off_color = RED)
+      self.stop_button = self.button(stop, on_color = RED, off_color = RED) 
       self.set_stop_button(self.stop_button)
 
     
