@@ -3,11 +3,13 @@ import Live
 from LividConstants import *
 from LividChanStripComponent import LividChanStripComponent
 from RGBButtonElement import RGBButtonElement
+from Elementary import Elementary
 
 from _Framework.MixerComponent import MixerComponent 
 from _Framework.EncoderElement import EncoderElement 
 
-class LividMixerComponent(MixerComponent):
+
+class LividMixerComponent(MixerComponent, Elementary):
   def __init__(self, 
     channel = 0, 
     sends = [], 
@@ -17,22 +19,11 @@ class LividMixerComponent(MixerComponent):
     crossfader = None, 
     master = None, 
     cue = None, 
-    button_class = RGBButtonElement, 
-    encoder_class = EncoderElement, 
-    faders = []):
+    faders = [],
+    **kwargs):
 
     MixerComponent.__init__(self, len(faders))
-
-    # Sanity checks
-    # Use raise Exception NOT Assert
-    if len(faders) is not len(mutes): 
-      raise Exception("You must provide the same number of mute buttons as faders") 
-    if len(faders) is not len(sends): 
-      raise Exception("You must provide the same number of send encoder groups as faders") 
-
-    # We allow the initializer of this class to manually set which Element abstractions to use!
-    self.encoder_class = encoder_class
-    self.button_class = button_class
+    Elementary.__init__(self, **kwargs)
 
     self.channel = channel
     self.num_tracks = len(faders)
@@ -50,10 +41,10 @@ class LividMixerComponent(MixerComponent):
 
   def build_channel_strips(self, mutes, faders, sends, solos, arms):
     """ Go through each channel strip, assign all the relevant controls"""
-    mute_buttons = [self.button(note) for note in mutes]
-    fader_encoders = [self.encoder(cc) for cc in faders] 
-    solo_buttons = [self.button(note, on_color = PURPLE, off_color = BLUE) for note in solos]
-    arm_buttons = [self.button(note, on_color = YELLOW, off_color = RED) for note in arms]
+    mute_buttons = self.extend([self.button(note) for note in mutes])
+    fader_encoders = self.extend([self.encoder(cc) for cc in faders])
+    solo_buttons = self.extend([self.button(note, on_color = PURPLE, off_color = BLUE) for note in solos])
+    arm_buttons = self.extend([self.button(note, on_color = YELLOW, off_color = RED) for note in arms])
 
     for i in range(self.num_tracks): # We've previously asserted that we have matching lengths of mutes etc
       strip = self.channel_strip(i)
@@ -87,13 +78,10 @@ class LividMixerComponent(MixerComponent):
   def tracks_to_use(self):
     return (self.song().visible_tracks + self.song().return_tracks)
 
-  def encoder(self, cc):
-    """ Build an encoder using parameters stored in the class"""
-    return self.encoder_class(MIDI_CC_TYPE, self.channel, cc, Live.MidiMap.MapMode.absolute)
-
-  def button(self, note, **kwargs):
-    return self.button_class(True, MIDI_NOTE_TYPE, self.channel, note, **kwargs)
-
-
   def _create_strip(self):
     return LividChanStripComponent()
+
+  def extend(self, list):
+    list.extend([None] * (self.num_tracks - len(list)))
+    return list
+

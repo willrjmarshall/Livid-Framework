@@ -1,18 +1,32 @@
 import Live
 
 from LividConstants import *
+from Elementary import Elementary
 
 from _Framework.SessionComponent import SessionComponent
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
 from _Framework.ButtonElement import ButtonElement
 from RGBButtonElement import RGBButtonElement
 
-class LividSessionComponent(SessionComponent):
-  def __init__(self, matrix = [], navigation = None, channel = 0, mixer = False):
+# Fuck yeah multiple inheritance
+class LividSessionComponent(SessionComponent, Elementary):
+  def __init__(self, matrix = [], 
+      navigation = None, 
+      scene_launches = [], 
+      channel = 0, 
+      mixer = False,
+      **kwargs):
+
     # We can infer the width and height from the button matrix
     SessionComponent.__init__(self, len(matrix[0]), len(matrix))
+    Elementary.__init__(self, **kwargs)
+
+
     self.channel = channel 
     self.setup_matrix(matrix)
+
+    if len(scene_launches) > 0:
+      self.setup_scene_launch(scene_launches)
 
     self.setup_navigation(navigation)
     # Scene launch buttons next
@@ -20,6 +34,13 @@ class LividSessionComponent(SessionComponent):
     if mixer:
       self.set_mixer(mixer)
 
+
+  def setup_scene_launch(self, scene_launches):
+    self.scene_launch_buttons = [self.button(note, off_color = YELLOW) for note in scene_launches]
+    
+    for i, scene in enumerate(self._scenes):
+      scene.set_launch_button(self.scene_launch_buttons[i])
+      scene.set_triggered_value(PURPLE)
 
   def setup_navigation(self, navigation):
     if navigation is not None:
