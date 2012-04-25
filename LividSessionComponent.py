@@ -13,7 +13,7 @@ class LividSessionComponent(SessionComponent, Elementary):
   def __init__(self, matrix = [], 
       navigation = None, 
       scene_launches = [], 
-      channel = 0, 
+      stops = [], 
       mixer = False,
       **kwargs):
 
@@ -22,8 +22,9 @@ class LividSessionComponent(SessionComponent, Elementary):
     Elementary.__init__(self, **kwargs)
 
 
-    self.channel = channel 
     self.setup_matrix(matrix)
+
+    self.setup_stops(stops)
 
     if len(scene_launches) > 0:
       self.setup_scene_launch(scene_launches)
@@ -34,6 +35,9 @@ class LividSessionComponent(SessionComponent, Elementary):
     if mixer:
       self.set_mixer(mixer)
 
+  def setup_stops(self, stops):
+    self.set_stop_track_clip_buttons(tuple([self.button(note) for note in stops]))
+    self.set_stop_track_clip_value(RED)
 
   def setup_scene_launch(self, scene_launches):
     self.scene_launch_buttons = [self.button(note, off_color = YELLOW) for note in scene_launches]

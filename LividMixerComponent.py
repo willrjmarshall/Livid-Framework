@@ -11,7 +11,6 @@ from _Framework.EncoderElement import EncoderElement
 
 class LividMixerComponent(MixerComponent, Elementary):
   def __init__(self, 
-    channel = 0, 
     sends = [], 
     mutes = [], 
     solos = [], 
@@ -25,7 +24,6 @@ class LividMixerComponent(MixerComponent, Elementary):
     MixerComponent.__init__(self, len(faders))
     Elementary.__init__(self, **kwargs)
 
-    self.channel = channel
     self.num_tracks = len(faders)
     self.name = "Mixer"
     self.set_track_offset(0)

@@ -5,13 +5,19 @@ from RGBButtonElement import RGBButtonElement
 from _Framework.EncoderElement import EncoderElement
 from _Framework.ButtonElement import ButtonElement
 
+# NOTES
+# In theory, we can strip this back and intercept the Button calls
+# And we can force-map colors to greyscale as needed
+# Also, flashing as needed
+
 class Elementary(object):
-  """ This mixin provides shared methods to allow modular control of the encoder and button classes """
+  """ This mixin provides shared methods to allow modular control of the encoder and button classes, as well as some boilerplate """
   
   # We default to these classes
   # BUT any class using Elementary as a mixin can have these overriden on __init__
-  def __init__(self, button_class = RGBButtonElement, encoder_class = EncoderElement):
+  def __init__(self, button_class = RGBButtonElement, encoder_class = EncoderElement, channel = 0):
     # We allow the initializer of this class to manually set which Element abstractions to use!
+    self.channel = channel
     self.encoder_class = encoder_class
     self.button_class = button_class
 
