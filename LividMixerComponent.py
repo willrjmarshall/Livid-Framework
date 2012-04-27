@@ -1,5 +1,6 @@
 import Live
 
+
 from LividConstants import *
 from LividChanStripComponent import LividChanStripComponent
 from RGBButtonElement import RGBButtonElement
@@ -42,7 +43,7 @@ class LividMixerComponent(MixerComponent, Elementary):
     mute_buttons = self.extend([self.button(note) for note in mutes])
     fader_encoders = self.extend([self.encoder(cc) for cc in faders])
     solo_buttons = self.extend([self.button(note, on_color = PURPLE, off_color = BLUE) for note in solos])
-    arm_buttons = self.extend([self.button(note, on_color = YELLOW, off_color = RED) for note in arms])
+    arm_buttons = self.extend([self.button(note, on_color = YELLOW, off_color = PURPLE) for note in arms])
 
     for i in range(self.num_tracks): # We've previously asserted that we have matching lengths of mutes etc
       strip = self.channel_strip(i)

@@ -36,8 +36,8 @@ class LividSessionComponent(SessionComponent, Elementary):
       self.set_mixer(mixer)
 
   def setup_stops(self, stops):
-    self.set_stop_track_clip_buttons(tuple([self.button(note) for note in stops]))
-    self.set_stop_track_clip_value(RED)
+    self.set_stop_track_clip_buttons(tuple([self.button(note, blink_on = True, blink_colors = [CYAN]) for note in stops]))
+    self.set_stop_track_clip_value(CYAN)
 
   def setup_scene_launch(self, scene_launches):
     self.scene_launch_buttons = [self.button(note, off_color = YELLOW) for note in scene_launches]
@@ -66,7 +66,7 @@ class LividSessionComponent(SessionComponent, Elementary):
         clip_slot = scene.clip_slot(i) 
         clip_slot.set_triggered_to_play_value(YELLOW)
         clip_slot.set_triggered_to_record_value(PURPLE)
-        clip_slot.set_stopped_value(RED)
+        clip_slot.set_stopped_value(WHITE)
         clip_slot.set_started_value(GREEN)
         clip_slot.set_launch_button(button_row[i])
       self.button_matrix.add_row(tuple(button_row))

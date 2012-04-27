@@ -1,4 +1,5 @@
 from _Framework.ButtonElement import ButtonElement
+
 from _Framework.ControlSurface import ControlSurface
 from LividConstants import *
 
@@ -29,13 +30,13 @@ class FlashingButtonElement(ButtonElement):
     self.current_color = 0
 
   # Override to maintain state, then call super for actual changes
-  def send_value(self, value):
+  def send_value(self, value, force_send=False ):
     self.current_color = value
     if value > 0 and value is not self.off_color:
       self.blinking = True
     else:
       self.blinking = False
-    super(FlashingButtonElement, self).send_value(value)
+    super(FlashingButtonElement, self).send_value(value, force_send)
 
   def blink(self):
     if self.blinking and self.current_color in self.blink_colors:
