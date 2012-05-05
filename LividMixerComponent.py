@@ -15,7 +15,7 @@ class LividMixerComponent(MixerComponent, Elementary):
     sends = [], 
     mutes = [], 
     solos = [], 
-    arms = [], 
+    arms = [],
     selects = [], 
     master_select = None,
     crossfader = None, 
@@ -63,7 +63,8 @@ class LividMixerComponent(MixerComponent, Elementary):
     if master is not None:
       master_strip = self.master_strip()
       master_strip.set_volume_control(self.encoder(master))
-      master_strip.set_select_button(self.button(select))
+      if select is not None:
+        master_strip.set_select_button(self.button(select))
 
   def build_cue(self, cue):
     """ Build and assign the cue volume control if set """

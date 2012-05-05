@@ -6,15 +6,14 @@ class LividControlSurface(ControlSurface):
 
   def __init__(self, c_instance):
     ControlSurface.__init__(self, c_instance)
+    self.set_suppress_rebuild_requests(True) #Turn rebuild back on, now that we're done setting up
     self.awaiting_refresh = False
     self._device_selection_follows_track_selection = True
     self._suggested_input_port = ('Ohm')
     self._suggested_output_port = ('Ohm')
-    self.set_suppress_rebuild_requests(True) #Turn rebuild back on, now that we're done setting up
     self.setup_mixer()
     self.setup_session()
     self.setup_transport()
-    self.set_suppress_rebuild_requests(False) #Turn rebuild back on, now that we're done setting up
     self.log_message("Finished setting up")
 
   def refresh_state(self):
@@ -26,8 +25,13 @@ class LividControlSurface(ControlSurface):
   def refresh_on_timer(self):
     self.awaiting_refresh = False
     ControlSurface.refresh_state(self)
+    self.set_suppress_rebuild_requests(False) #Turn rebuild back on, now that we're done setting up
+    self.request_rebuild_midi_map()
     self.log_message("Refreshed state after 1 second delay")
 
+  def request_rebuild_midi_map(self):
+    self.log_message("Rebuilding MIDI map")
+    ControlSurface.request_rebuild_midi_map(self)
 
 
   def setup_mixer(self):
