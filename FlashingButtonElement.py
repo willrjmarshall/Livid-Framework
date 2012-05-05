@@ -21,7 +21,6 @@ class FlashingButtonElement(ButtonElement):
     identifier,
     blink_on = False,
     blink_colors = []):
-
     ButtonElement.__init__(self, is_momentary, msg_type, channel, identifier)
 
     self.blink_on = blink_on
@@ -36,7 +35,8 @@ class FlashingButtonElement(ButtonElement):
       self.blinking = True
     else:
       self.blinking = False
-    super(FlashingButtonElement, self).send_value(value, force_send)
+    if value is not None:
+      super(FlashingButtonElement, self).send_value(value, force_send)
 
   def blink(self):
     if self.blinking and self.current_color in self.blink_colors:

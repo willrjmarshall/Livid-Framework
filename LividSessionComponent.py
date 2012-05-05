@@ -14,6 +14,7 @@ class LividSessionComponent(SessionComponent, Elementary):
       navigation = None, 
       scene_launches = [], 
       stops = [], 
+      stop_all = None, 
       mixer = False,
       **kwargs):
 
@@ -24,7 +25,7 @@ class LividSessionComponent(SessionComponent, Elementary):
 
     self.setup_matrix(matrix)
 
-    self.setup_stops(stops)
+    self.setup_stops(stops, stop_all)
 
     if len(scene_launches) > 0:
       self.setup_scene_launch(scene_launches)
@@ -35,9 +36,12 @@ class LividSessionComponent(SessionComponent, Elementary):
     if mixer:
       self.set_mixer(mixer)
 
-  def setup_stops(self, stops):
+  def setup_stops(self, stops, stop_all):
     self.set_stop_track_clip_buttons(tuple([self.button(note, blink_on = True, blink_colors = [CYAN]) for note in stops]))
     self.set_stop_track_clip_value(CYAN)
+    
+    if stop_all:
+      self.set_stop_all_clips_button(self.button(stop_all))
 
   def setup_scene_launch(self, scene_launches):
     self.scene_launch_buttons = [self.button(note, off_color = YELLOW) for note in scene_launches]
@@ -66,7 +70,7 @@ class LividSessionComponent(SessionComponent, Elementary):
         clip_slot = scene.clip_slot(i) 
         clip_slot.set_triggered_to_play_value(YELLOW)
         clip_slot.set_triggered_to_record_value(PURPLE)
-        clip_slot.set_stopped_value(WHITE)
+        clip_slot.set_stopped_value(CYAN)
         clip_slot.set_started_value(GREEN)
         clip_slot.set_launch_button(button_row[i])
       self.button_matrix.add_row(tuple(button_row))
