@@ -16,6 +16,8 @@ class LividMixerComponent(MixerComponent, Elementary):
     mutes = [], 
     solos = [], 
     arms = [], 
+    selects = [], 
+    master_select = None,
     crossfader = None, 
     master = None, 
     cue = None, 
@@ -30,20 +32,21 @@ class LividMixerComponent(MixerComponent, Elementary):
     self.set_track_offset(0)
 
     # One for each channel
-    self.build_channel_strips(mutes, faders, sends, solos, arms)
+    self.build_channel_strips(mutes, faders, sends, solos, arms, selects)
 
     # One-offs
-    self.build_master(master)
+    self.build_master(master, master_select)
     self.build_cue(cue)
     self.build_crossfader(crossfader)
 
 
-  def build_channel_strips(self, mutes, faders, sends, solos, arms):
+  def build_channel_strips(self, mutes, faders, sends, solos, arms, selects):
     """ Go through each channel strip, assign all the relevant controls"""
     mute_buttons = self.extend([self.button(note) for note in mutes])
     fader_encoders = self.extend([self.encoder(cc) for cc in faders])
     solo_buttons = self.extend([self.button(note, on_color = PURPLE, off_color = BLUE) for note in solos])
     arm_buttons = self.extend([self.button(note, on_color = YELLOW, off_color = PURPLE) for note in arms])
+    select_buttons = self.extend([self.button(note, on_color = GREEN, off_color = PURPLE) for note in selects])
 
     for i in range(self.num_tracks): # We've previously asserted that we have matching lengths of mutes etc
       strip = self.channel_strip(i)
@@ -52,13 +55,15 @@ class LividMixerComponent(MixerComponent, Elementary):
       strip.set_mute_button(mute_buttons[i])
       strip.set_arm_button(arm_buttons[i])
       strip.set_solo_button(solo_buttons[i])
+      strip.set_select_button(select_buttons[i])
       strip.set_send_controls(self.build_send_encoders(sends[i]))
 
-  def build_master(self, master):
+  def build_master(self, master, select):
     """ Build and assign master volume fader if set """
     if master is not None:
       master_strip = self.master_strip()
       master_strip.set_volume_control(self.encoder(master))
+      master_strip.set_select_button(self.button(select))
 
   def build_cue(self, cue):
     """ Build and assign the cue volume control if set """
