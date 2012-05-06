@@ -1,5 +1,7 @@
 import Live
+from LividConstants import *
 from _Framework.ControlSurface import ControlSurface
+from RGBButtonElement import RGBButtonElement
 
 class LividControlSurface(ControlSurface):
   """ Custom control surface with boilerplate handled """
@@ -14,6 +16,7 @@ class LividControlSurface(ControlSurface):
     self.setup_mixer()
     self.setup_session()
     self.setup_transport()
+    self.setup_custom()
     self.log_message("Finished setting up")
 
   def refresh_state(self):
@@ -33,6 +36,8 @@ class LividControlSurface(ControlSurface):
     self.log_message("Rebuilding MIDI map")
     ControlSurface.request_rebuild_midi_map(self)
 
+  def setup_custom(self):
+    pass
 
   def setup_mixer(self):
     raise AssertionError, 'Function setup_mixer must be overridden by subclass'
