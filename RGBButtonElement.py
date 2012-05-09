@@ -1,4 +1,5 @@
 from FlashingButtonElement import FlashingButtonElement
+from _Framework.ButtonElement import ButtonElement
 from LividConstants import *
 
 class RGBButtonElement(FlashingButtonElement):

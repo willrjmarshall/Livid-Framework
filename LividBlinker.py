@@ -1,4 +1,5 @@
 import Live
+
 from RGBButtonElement import RGBButtonElement
 from Elementary import Elementary
 from _Framework.ControlSurfaceComponent import ControlSurfaceComponent
@@ -23,16 +24,21 @@ class LividBlinker(ControlSurfaceComponent, Elementary):
     self.prev_position = 0
     self.on = False
 
+
+
+  # Catch play/pause and reset
+
+
   def blink(self):
     position = int(self.song().current_song_time)
-    if position > self.prev_position:
+    if int(position) != int(self.prev_position):
       self.prev_position = position
       if self.on: 
-        self.on = False
         self.led.send_value(0, True)
+        self.on = False
       else:
-        self.on = True
         self.led.send_value(127, True)
+        self.on = True
 
   def update(self):
 

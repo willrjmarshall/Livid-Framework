@@ -6,9 +6,20 @@ from RGBButtonElement import RGBButtonElement
 from Elementary import Elementary
 
 class LividTransportComponent(TransportComponent, Elementary):
-  def __init__(self, play = None, stop = None, bpm_down = None, bpm_up = None, **kwargs):
+  def __init__(self, 
+      play = None, 
+      stop = None, 
+      bpm_down = None, 
+      bpm_up = None,
+      play_indicator = None,
+      **kwargs):
     TransportComponent.__init__(self)
     Elementary.__init__(self, **kwargs)
+
+    if play_indicator is not None:
+      self.play_indicator = self.encoder(play_indicator)
+    else:
+      self.play_indicator = None
 
     if play is not None:
       self.play_button = self.button(play, off_color = PURPLE) 
@@ -38,3 +49,19 @@ class LividTransportComponent(TransportComponent, Elementary):
       else:
         adjust = -0.5
       self.song().tempo = self.song().tempo + adjust
+
+  def _on_playing_status_changed(self):
+    if self.is_enabled():
+      if (self._stop_button != None):
+        self._stop_button.turn_off()
+      if (self._play_button != None):
+        if self.song().is_playing:
+          self._play_button.turn_on()
+        else:
+          self._play_button.turn_off()
+      if self.play_indicator is not None:
+        if self.song().is_playing:
+          self.play_indicator.send_value(127, True)
+        else:
+          self.play_indicator.send_value(0, True)
+    

@@ -36,7 +36,7 @@ class FlashingButtonElement(ButtonElement):
     else:
       self.blinking = False
     if value is not None:
-      #super(FlashingButtonElement, self).send_value(value, force_send)
+      ##super(FlashingButtonElement, self).send_value(value, force_send)
       ButtonElement.send_value(self, value, force_send)
 
   def blink(self):
