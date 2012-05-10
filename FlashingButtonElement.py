@@ -26,22 +26,19 @@ class FlashingButtonElement(ButtonElement):
     self.blink_on = blink_on
     self.blink_colors = set(blink_colors)
     self.blinking = False
-    self.current_color = 0
 
   # Override to maintain state, then call super for actual changes
   def send_value(self, value, force_send=False ):
-    self.current_color = value
-    if value > 0 and value is not self.off_color:
-      self.blinking = True
+    if value in self.blink_colors: 
+      self.blinking = value
     else:
       self.blinking = False
     if value is not None:
-      ##super(FlashingButtonElement, self).send_value(value, force_send)
       ButtonElement.send_value(self, value, force_send)
 
   def blink(self):
-    if self.blinking and self.current_color in self.blink_colors:
-      if self._last_sent_value is not self.off_color and self._last_sent_value is not 0:
+    if self.blinking:
+      if self._last_sent_value > 0:
         super(FlashingButtonElement, self).send_value(0)
       else:
-        super(FlashingButtonElement, self).send_value(self.current_color)
+        super(FlashingButtonElement, self).send_value(self.blinking)

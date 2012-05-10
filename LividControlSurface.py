@@ -48,3 +48,14 @@ class LividControlSurface(ControlSurface):
   def setup_transport(self):
     raise assertionerror, 'function setup_transport must be overridden by subclass'
 
+
+  # OVERRIDES to fix dumbass bugs in the _Framework
+  def _update_device_selection(self): # Fixing a bug in this method
+    track = self.song().view.selected_track
+    device_to_select = track.view.selected_device
+    if ((device_to_select == None) and (len(track.devices) > 0)):
+      device_to_select = track.devices[0]
+    if (device_to_select != None):
+      self.song().view.select_device(device_to_select)
+    if self._device_component:
+      self._device_component.set_device(device_to_select)

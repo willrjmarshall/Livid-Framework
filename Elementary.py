@@ -20,6 +20,7 @@ class Elementary(object):
     self.channel = channel
     self.encoder_class = encoder_class
     self.button_class = button_class
+    self.cached_callbacks = [] # Cache callbacks so we can tear them down on disconnect
 
   def encoder(self, cc):
     """ Build an encoder using parameters stored in the class"""
@@ -36,6 +37,11 @@ class Elementary(object):
 
     if button.blink_on:
       self._register_timer_callback(button.blink)
+      self.cached_callbacks.append(button.blink)
     return button
+
+  def disconnect(self):
+    for callback in self.cached_callbacks:
+      self._unregister_timer_callback(callback)
 
 

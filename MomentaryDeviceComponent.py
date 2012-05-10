@@ -1,4 +1,5 @@
 import Live
+
 from LividConstants import *
 
 from Elementary import Elementary
@@ -46,6 +47,8 @@ class MomentaryDeviceComponent(ControlSurfaceComponent, Elementary):
 
 
   def update(self):
+    for button in self.buttons:
+      button.turn_off()
     return None
 
   def disconnect(self):
