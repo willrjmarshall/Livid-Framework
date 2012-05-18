@@ -16,15 +16,20 @@ class LividSessionComponent(SessionComponent, Elementary):
       stops = [], 
       stop_all = None, 
       mixer = False,
+      triggered_to_play_value = YELLOW,
+      record_value = PURPLE,
+      stopped_value = CYAN,
+      started_value = GREEN,
       **kwargs):
-
     # We can infer the width and height from the button matrix
     SessionComponent.__init__(self, len(matrix[0]), len(matrix))
     Elementary.__init__(self, **kwargs)
 
-
+    self.triggered_to_play_value = triggered_to_play_value
+    self.record_value = record_value
+    self.stopped_value = stopped_value
+    self.started_value = started_value
     self.setup_matrix(matrix)
-
     self.setup_stops(stops, stop_all)
 
     if len(scene_launches) > 0:
@@ -37,8 +42,9 @@ class LividSessionComponent(SessionComponent, Elementary):
       self.set_mixer(mixer)
 
   def setup_stops(self, stops, stop_all):
-    self.set_stop_track_clip_buttons(tuple([self.button(note, blink_on = True, blink_colors = [CYAN]) for note in stops]))
-    self.set_stop_track_clip_value(CYAN)
+    if len(stops) > 0:
+      self.set_stop_track_clip_buttons(tuple([self.button(note, blink_on = True, blink_colors = [CYAN]) for note in stops]))
+      self.set_stop_track_clip_value(CYAN)
     
     if stop_all:
       self.set_stop_all_clips_button(self.button(stop_all))
@@ -68,11 +74,12 @@ class LividSessionComponent(SessionComponent, Elementary):
       button_row = [self.button(cc, blink_on = True, off_color = OFF) for cc in row]
       for i, cc in enumerate(row):
         clip_slot = scene.clip_slot(i) 
-        clip_slot.set_triggered_to_play_value(YELLOW)
-        clip_slot.set_triggered_to_record_value(PURPLE)
-        clip_slot.set_stopped_value(CYAN)
-        clip_slot.set_started_value(GREEN)
+        clip_slot.set_triggered_to_play_value(self.triggered_to_play_value)
+        clip_slot.set_triggered_to_record_value(self.record_value)
+        clip_slot.set_stopped_value(self.stopped_value)
+        clip_slot.set_started_value(self.started_value)
         clip_slot.set_launch_button(button_row[i])
+
       self.button_matrix.add_row(tuple(button_row))
 
 

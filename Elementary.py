@@ -15,12 +15,17 @@ class Elementary(object):
   
   # We default to these classes
   # BUT any class using Elementary as a mixin can have these overriden on __init__
-  def __init__(self, button_class = RGBButtonElement, encoder_class = EncoderElement, channel = 0):
+  def __init__(self, 
+      button_class = RGBButtonElement, 
+      color_mappings = None,
+      encoder_class = EncoderElement, channel = 0):
     # We allow the initializer of this class to manually set which Element abstractions to use!
     self.channel = channel
     self.encoder_class = encoder_class
     self.button_class = button_class
+    self.color_mappings = color_mappings
     self.cached_callbacks = [] # Cache callbacks so we can tear them down on disconnect
+
 
   def encoder(self, cc):
     """ Build an encoder using parameters stored in the class"""
@@ -28,11 +33,17 @@ class Elementary(object):
 
   def button(self, note, **kwargs):
     """ Create a button of the cached class, and attach event callbacks for blinking """
-    if isinstance(note, dict):
+    # If we've set a color map for this class, splice it into the args
+    # For each button
+    # This will FAIL if using buttons that don't support color mappings
+    if self.color_mappings is not None:
+      kwargs["color_mappings"] = self.color_mappings
+
+    if isinstance(note, dict): # We can pass a dict with explicit options
       kwargs = dict(kwargs.items() + note.items())
       channel = note.get('channel', self.channel)
       button = self.button_class(True, MIDI_NOTE_TYPE, channel, kwargs.pop("note"), **kwargs)
-    else:
+    else: # Or just a note
       button =  self.button_class(True, MIDI_NOTE_TYPE, self.channel, note, **kwargs)
 
     if button.blink_on:
