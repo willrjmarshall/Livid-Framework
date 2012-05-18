@@ -12,6 +12,7 @@ from RGBButtonElement import RGBButtonElement
 class LividSessionComponent(SessionComponent, Elementary):
   def __init__(self, matrix = [], 
       navigation = None, 
+      scroll_navigation = None,
       scene_launches = [], 
       stops = [], 
       stop_all = None, 
@@ -35,7 +36,7 @@ class LividSessionComponent(SessionComponent, Elementary):
     if len(scene_launches) > 0:
       self.setup_scene_launch(scene_launches)
 
-    self.setup_navigation(navigation)
+    self.setup_navigation(navigation, scroll_navigation)
     # Scene launch buttons next
    
     if mixer:
@@ -56,7 +57,13 @@ class LividSessionComponent(SessionComponent, Elementary):
       scene.set_launch_button(self.scene_launch_buttons[i])
       scene.set_triggered_value(PURPLE)
 
-  def setup_navigation(self, navigation):
+  def setup_navigation(self, navigation, scroll_navigation):
+    if scroll_navigation is not None:
+      self.scroll_vertical = self.encoder(scroll_navigation["vertical"], map_mode = Live.MidiMap.MapMode.relative_two_compliment)
+      self.scroll_horizontal = self.encoder(scroll_navigation["horizontal"], map_mode = Live.MidiMap.MapMode.relative_two_compliment)
+      self.scroll_vertical.add_value_listener(self.handle_scroll_vertical)
+      self.scroll_horizontal.add_value_listener(self.handle_scroll_horizontal)
+
     if navigation is not None:
       self.up_button = self.button(navigation['up'], off_color = GREEN)    
       self.down_button = self.button(navigation['down'], off_color = GREEN)    
@@ -81,5 +88,46 @@ class LividSessionComponent(SessionComponent, Elementary):
         clip_slot.set_launch_button(button_row[i])
 
       self.button_matrix.add_row(tuple(button_row))
+
+  def handle_scroll_vertical(self, value):
+    if self.is_enabled():
+      if value is 127:
+        self.set_offsets(self._track_offset, max(0, self._scene_offset - 1))
+      elif value is 1:
+        self.set_offsets(self._track_offset, (self._scene_offset + 1))
+
+  def handle_scroll_horizontal(self, value):
+    if self.is_enabled():
+      if value is 127:
+        self.set_offsets(max(0, (self._track_offset - 1)), self._scene_offset)
+      elif value is 1:
+        self.set_offsets((self._track_offset + 1), self._scene_offset)
+
+  def disconnect(self):
+    self.scroll_vertical.remove_value_listener(self.scroll_vertical)
+    SessionComponent.disconnect(self)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

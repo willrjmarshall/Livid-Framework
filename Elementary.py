@@ -27,9 +27,9 @@ class Elementary(object):
     self.cached_callbacks = [] # Cache callbacks so we can tear them down on disconnect
 
 
-  def encoder(self, cc):
+  def encoder(self, cc, map_mode = Live.MidiMap.MapMode.absolute):
     """ Build an encoder using parameters stored in the class"""
-    return self.encoder_class(MIDI_CC_TYPE, self.channel, cc, Live.MidiMap.MapMode.absolute)
+    return self.encoder_class(MIDI_CC_TYPE, self.channel, cc, map_mode) 
 
   def button(self, note, **kwargs):
     """ Create a button of the cached class, and attach event callbacks for blinking """
